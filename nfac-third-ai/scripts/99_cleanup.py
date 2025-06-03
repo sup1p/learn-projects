@@ -1,30 +1,18 @@
-# scripts/99_cleanup.py
-"""
-Cleanup script to remove assistant and associated resources
-"""
-
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
-
-# Load environment variables
 load_dotenv()
 
-# Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def cleanup_assistant():
-    """Delete the assistant and clean up files."""
     try:
-        # Get assistant ID
         with open('.assistant_id', 'r') as f:
             assistant_id = f.read().strip()
         
-        # Delete assistant
         client.beta.assistants.delete(assistant_id)
         print(f"✅ Deleted assistant: {assistant_id}")
         
-        # Remove local files
         os.remove('.assistant_id')
         print("✅ Removed .assistant_id file")
         
@@ -49,7 +37,6 @@ def cleanup_generated_files():
             print(f"❌ Error removing {filename}: {e}")
 
 def list_all_assistants():
-    """List all assistants (for debugging)."""
     try:
         assistants = client.beta.assistants.list()
         print("📋 All assistants:")
@@ -59,13 +46,10 @@ def list_all_assistants():
         print(f"❌ Error listing assistants: {e}")
 
 def main():
-    """Main cleanup function."""
     print("🧹 Starting cleanup...")
     
-    # Show current assistants
     list_all_assistants()
     
-    # Ask for confirmation
     confirm = input("\nDo you want to delete the study assistant? (y/N): ").strip().lower()
     
     if confirm in ['y', 'yes']:
