@@ -17,11 +17,16 @@ export const ChatPage = () => {
 
     const [messages, setMessages] = useState<Message[]>([])
 
+    // 1. Load messages from mock and localStorage
     useEffect(() => {
         const chatMessages = mockMessages.filter(message => message.chatId === chatId)
         const storedMessages = JSON.parse(localStorage.getItem(`chat_messages_${chatId}`) || '[]') as Message[]
         setMessages([...chatMessages, ...storedMessages])
     }, [chatId])
+
+    const persistUserMessages = (userMessages: Message[]) => {
+        localStorage.setItem(`chat_messages_${chatId}`, JSON.stringify(userMessages))
+    }
 
     const handleSendMessage = async (content: string) => {
         const newMessage: Message = {
@@ -33,28 +38,26 @@ export const ChatPage = () => {
             isRead: false
         }
 
-        // Add user message
+        // Step 1: Update state and persist user message
         setMessages(prev => {
             const mockMsgs = mockMessages.filter(message => message.chatId === chatId)
-            const userMsgs = prev.filter(message => !mockMessages.some(mock => mock.id === message.id))
-            const newMsgs = [...userMsgs, newMessage]
-            localStorage.setItem(`chat_messages_${chatId}`, JSON.stringify(newMsgs))
-            return [...mockMsgs, ...newMsgs]
+            const userMsgs = [...prev.filter(m => !mockMessages.some(mm => mm.id === m.id)), newMessage]
+            persistUserMessages(userMsgs)
+            return [...mockMsgs, ...userMsgs]
         })
 
-        // If this is an AI chat, generate and add AI response
+        // Step 2: Generate AI message if chat is with AI
         if (currentUser?.type === 'ai') {
             try {
-                const aiResponse = await generateAIResponse(content)
+                const aiMessage = await generateAIResponse(content)
                 setMessages(prev => {
                     const mockMsgs = mockMessages.filter(message => message.chatId === chatId)
-                    const userMsgs = prev.filter(message => !mockMessages.some(mock => mock.id === message.id))
-                    const newMsgs = [...userMsgs, aiResponse]
-                    localStorage.setItem(`chat_messages_${chatId}`, JSON.stringify(newMsgs))
-                    return [...mockMsgs, ...newMsgs]
+                    const userMsgs = [...prev.filter(m => !mockMessages.some(mm => mm.id === m.id)), aiMessage]
+                    persistUserMessages(userMsgs)
+                    return [...mockMsgs, ...userMsgs]
                 })
             } catch (error) {
-                console.error('Failed to get AI response:', error)
+                console.error('AI response failed', error)
             }
         }
     }
