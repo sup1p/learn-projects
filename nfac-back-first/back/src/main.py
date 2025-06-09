@@ -7,10 +7,20 @@ from .database import engine, Base, SessionLocal
 from .tasks.routes.default import router as default_router
 from .tasks.routes.secure import router as secure_router
 from .config import settings
+from fastapi.middleware.cors import CORSMiddleware
+
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # ⚠️ НЕ ДЕЛАЙ ТАК В ПРОДЕ
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def get_db():
     db = SessionLocal()
