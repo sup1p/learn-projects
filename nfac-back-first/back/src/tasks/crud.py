@@ -1,5 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from fastapi import HTTPException
 from . import models
@@ -8,16 +9,18 @@ from .schemas import Task as TaskSchema, TaskCreate, TaskUpdate
 
 class TaskCRUD:
     @staticmethod
-    def create_task(db: Session, task_data: TaskCreate):
-        db_task = models.Task(title=task_data.title, description=task_data.description, deadline=task_data.deadline)
+    def create_task(db: Session, task_data: TaskCreate, user_id: int):
+        db_task = models.Task(title=task_data.title, description=task_data.description, deadline=task_data.deadline, user_id=user_id)
         db.add(db_task)
         db.commit()
         db.refresh(db_task)
         return db_task
 
     @staticmethod
-    def get_all_tasks(db: Session):
-        return db.query(models.Task).all()
+    def get_all_tasks(db: Session, user_id: Optional[int] = None):
+        if user_id is None:
+            return db.query(models.Task).all()
+        return db.query(models.Task).filter(models.Task.user_id == user_id).all()
 
     @staticmethod
     def edit_task(db: Session, task_id: int, task_data: TaskUpdate):

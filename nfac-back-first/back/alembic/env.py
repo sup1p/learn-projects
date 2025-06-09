@@ -1,6 +1,11 @@
+import sys
+import os
 from logging.config import fileConfig
 from dotenv import load_dotenv
-import os
+
+# This is a hack to allow alembic to find the src module
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.database import Base
 from src.tasks.models import Task
 
@@ -61,7 +66,6 @@ def run_migrations_online() -> None:
     and associate a connection with the context.
 
     """
-    from src.tasks.models import Task
     config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL"))
     connectable = engine_from_config(
         config.get_section(config.config_ini_section, {}),

@@ -13,9 +13,10 @@ class TaskCreate(BaseModel):
 class Task(BaseModel):
     id: int
     title: str
-    deadline: datetime
+    deadline: Optional[datetime] = None
     description: str
     completed: bool
+    user_id: int
 
     class Config:
         orm_mode = True
@@ -24,3 +25,8 @@ class TaskUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
     deadline: Optional[datetime] = None
+
+class UserCreate(BaseModel):
+    username: str
+    password: str
+

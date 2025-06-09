@@ -2,10 +2,11 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
-from ..database import SessionLocal
+from ...database import SessionLocal
+from .. import models
+from ..crud import TaskCRUD
+from ..schemas import Task, TaskCreate, TaskUpdate
 
-from .crud import TaskCRUD
-from .schemas import Task, TaskCreate, TaskUpdate
 
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
@@ -15,10 +16,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-@router.post("/create", response_model=Task)
-async def create_task(task_data: TaskCreate, db: Session = Depends(get_db)):
-    return TaskCRUD.create_task(db=db, task_data=task_data)
 
 
 @router.get("/get_all", response_model=List[Task])
