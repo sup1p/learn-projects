@@ -20,4 +20,4 @@ jobs:
       - name: Build and run backend service
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: docker compose up -d --build
+        run: docker compose -f nfac-back-first/docker-compose.yml up -d --build
