@@ -10,8 +10,6 @@ services:
       - "8000:8000"
     volumes:
       - ./back:/src
-    env_file:
-      - ./back/.env
     environment:
       - DATABASE_URL=${DATABASE_URL}
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
