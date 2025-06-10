@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.so
+
+# Virtual environment
+venv/
+ENV/
+env/
+
+# VSCode and IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Celery beat database files
+celerybeat-schedule
+celerybeat-schedule-shm
+celerybeat-schedule-wal
+
+# SQLite (if used)
+*.sqlite3
+
+# Logs
+*.log
+
+# Docker
+*.pid
+*.tar
+*.img
+
+# dotenv
+.env
