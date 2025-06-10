@@ -16,10 +16,10 @@ class Task(BaseModel):
     deadline: Optional[datetime] = None
     description: str
     completed: bool
-    user_id: int
+    user_id: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class TaskUpdate(BaseModel):
     title: Optional[str] = None

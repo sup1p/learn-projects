@@ -1,0 +1,16 @@
+# Git
+.git
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+back/venv/
+
+# IDE folders
+.idea/
+.vscode/ 
