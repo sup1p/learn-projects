@@ -1,21 +1,20 @@
-services:
+name: Deploy Backend
+
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - main
+  workflow_dispatch:
 
-permissions:
-  contents: read
-    backend:
-      build:
-        context: .
-        dockerfile: back/DockerFile
-      container_name: fastapi-backend
-      ports:
-        - "8000:8000"
-      environment:
-        - DATABASE_URL=${DATABASE_URL}
-      env_file:
-        - ./nfac-back-first/back/.env
-      command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build and run backend service
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: docker-compose up -d --build
