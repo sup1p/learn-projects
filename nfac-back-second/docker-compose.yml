@@ -12,6 +12,10 @@ services:
     depends_on:
       - redis
       - db
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/mydatabase
 
   redis:
     image: redis:7
@@ -28,6 +32,10 @@ services:
       - web
     volumes:
       - .:/app
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/mydatabase
 
   celery_beat:
     build: .
@@ -38,6 +46,10 @@ services:
       - web
     volumes:
       - .:/app
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/mydatabase
 
   db:
     image: postgres:15
